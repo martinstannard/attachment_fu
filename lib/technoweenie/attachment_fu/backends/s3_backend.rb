@@ -376,6 +376,10 @@ module Technoweenie # :nodoc:
           Technoweenie::AttachmentFu::Backends::S3Backend.distribution_domain
         end
 
+        def s3_subdomain
+          Technoweenie::AttachmentFu::Backends::S3Backend.subdomain
+        end
+
         protected
           # Called in the after_destroy callback
           def destroy_file
