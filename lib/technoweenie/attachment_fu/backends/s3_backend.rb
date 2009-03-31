@@ -213,6 +213,10 @@ module Technoweenie # :nodoc:
           @hostname ||= s3_config[:server] || AWS::S3::DEFAULT_HOST
         end
 
+        def self.subdomain
+          @hostname ||= s3_config[:subdomain] || AWS::S3::DEFAULT_HOST
+        end
+
         def self.port_string
           @port_string ||= (s3_config[:port].nil? || s3_config[:port] == (s3_config[:use_ssl] ? 443 : 80)) ? '' : ":#{s3_config[:port]}"
         end
@@ -236,6 +240,10 @@ module Technoweenie # :nodoc:
           
           def cloudfront_distribution_domain
             Technoweenie::AttachmentFu::Backends::S3Backend.distribution_domain
+          end
+
+          def s3_subdomain
+            Technoweenie::AttachmentFu::Backends::S3Backend.subdomain
           end
         end
 
@@ -289,9 +297,25 @@ module Technoweenie # :nodoc:
           "http://" + cloudfront_distribution_domain + "/" + full_filename(thumbnail)
         end
         
+        # All public objects are accessible via a GET request to a subdomain if specified. You can generate a
+        # url for an object using the s3_url method.
+        #
+        #   @photo.subdomain_url
+        #
+        # The resulting url is in the form: <tt>http(s)://:subdomain/:table_name/:id/:file</tt> where
+        # the <tt>:subdomain</tt> variable defaults to <tt>AWS::S3 URL::DEFAULT_HOST</tt> (s3.amazonaws.com) and can be
+        # set using the configuration parameters in <tt>RAILS_ROOT/config/amazon_s3.yml</tt>.
+        #
+        # The optional thumbnail argument will output the thumbnail's filename (if any).
+        def subdomain_url(thumbnail = nil)
+          File.join(s3_protocol + s3_subdomain + s3_port_string, full_filename(thumbnail))
+        end
+        
         def public_filename(*args)
           if attachment_options[:cloudfront]
             cloudfront_url(args)
+          elsif attachment_options[:subdomain]
+            subdomain_url(args)
           else
             s3_url(args)
           end
