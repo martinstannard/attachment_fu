@@ -198,7 +198,7 @@ module Technoweenie # :nodoc:
 
           def save_to_storage
             if save_attachment?
-              @object = @@container.create_object(full_filename)
+              @object = @@container.create_object(full_filename,true)
               @object.write((temp_path ? File.open(temp_path) : temp_data))
             end
 
