@@ -9,7 +9,9 @@ module Technoweenie # :nodoc:
       #
       # == Requirements
       #
-      # Requires the {Cloud Files Gem}[http://www.mosso.com/cloudfiles.jsp] by Rackspace 
+      # Requires the Cloud Files Ruby Gem by Rackspace.  To install the gem, add the github gem source 
+      # ("gem sources -a http://gems.github.com"), then do a "gem install rackspace-cloudfiles".
+      # For more information, see the {Cloud Files github repository}[http://github.com/rackspace/ruby-cloudfiles/tree/master]
       #
       # == Configuration
       #
