@@ -3,7 +3,7 @@ module Technoweenie # :nodoc:
     module Backends
       # = CloudFiles Storage Backend
       #
-      # Enables use of {Rackspace Cloud Files}[http://www.mosso.com/cloudfiles.jsp] as a storage mechanism
+      # Enables use of {Rackspace Cloud Files}[http://www.rackspacecloud.com/cloud_hosting_products/files] as a storage mechanism
       #
       # Based heavily on the Amazon S3 backend.
       #
@@ -16,8 +16,11 @@ module Technoweenie # :nodoc:
       # == Configuration
       #
       # Configuration is done via <tt>RAILS_ROOT/config/rackspace_cloudfiles.yml</tt> and is loaded according to the <tt>RAILS_ENV</tt>.
-      # The minimum connection options that you must specify are a container name, your Mosso login name and your Mosso API key.
-      # You can sign up for Cloud Files and get access keys by visiting https://www.mosso.com/buy.htm 
+      # The minimum connection options that you must specify are a container name, your Rackspace Cloud login name and your Rackspace Cloud API key.
+      # You can sign up for Cloud Files and get access keys by visiting https://www.rackspacecloud.com/signup 
+      #
+      # For Rackspace-hosted customers, you can set the "servicenet" option in your rackspace_cloudfiles.yml value to true to send your traffic over
+      # the private Rackspace service network, which allows for faster transfer speeds and unbilled bandwidth vs. going over the public network.
       #
       # Example configuration (RAILS_ROOT/config/rackspace_cloudfiles.yml)
       #
@@ -34,7 +37,8 @@ module Technoweenie # :nodoc:
       #   production:
       #     container_name: appname
       #     username: <your key>
-      #     apik_key: <your key>
+      #     api_key: <your key>
+      #     servicenet: true
       #
       # You can change the location of the config path by passing a full path to the :cloudfiles_config_path option.
       #
@@ -88,7 +92,7 @@ module Technoweenie # :nodoc:
       # You can get an object's public URL using the cloudfiles_url accessor. For example, assuming that for your postcard app
       # you had a container name like 'postcard_world_development', and an attachment model called Photo:
       #
-      #   @postcard.cloudfiles_url # => http://cdn.cloudfiles.mosso.com/c45182/uploaded_files/20/london.jpg
+      #   @postcard.cloudfiles_url # => http://c0045182.cdn.cloudfiles.rackspacecloud.com/uploaded_files/20/london.jpg
       #
       # The resulting url is in the form: http://:server/:container_name/:table_name/:id/:file.
       # The optional thumbnail argument will output the thumbnail's filename (if any).
@@ -125,7 +129,8 @@ module Technoweenie # :nodoc:
           end
 
           @@container_name = @@cloudfiles_config[:container_name]
-          @@cf = CloudFiles::Connection.new(@@cloudfiles_config[:username], @@cloudfiles_config[:api_key])
+          servicenet = @@cloudfiles_config[:servicenet] == true ? true : false
+          @@cf = CloudFiles::Connection.new(@@cloudfiles_config[:username], @@cloudfiles_config[:api_key], true, servicenet)
           @@container = @@cf.container(@@container_name)
           
           base.before_update :rename_file

@@ -12,3 +12,4 @@ production:
     container_name: appname_production
     username: 
     api_key: 
+    use_servicenet: false

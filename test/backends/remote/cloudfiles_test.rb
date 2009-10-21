@@ -38,7 +38,7 @@ class CloudfilesTest < Test::Unit::TestCase
     def test_should_create_valid_url(klass = CloudFilesAttachment)
       attachment_model klass
       attachment = upload_file :filename => '/files/rails.png'
-      assert_match(%r!http://cdn.cloudfiles.mosso.com/(.*?)/cloud_files_attachments/1/rails.png!, attachment.cloudfiles_url)
+      assert_match(%r!http://(.*?).cdn.cloudfiles.rackspacecloud.com/cloud_files_attachments/1/rails.png!, attachment.cloudfiles_url)
     end
     
     test_against_subclass :test_should_create_valid_url, CloudFilesAttachment
